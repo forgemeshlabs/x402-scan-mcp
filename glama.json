@@ -1,0 +1,46 @@
+{
+  "$schema": "https://glama.ai/mcp/schemas/server.json",
+  "maintainers": ["clawdbotworker"],
+  "name": "@forgemeshlabs/x402-scan-mcp",
+  "description": "Free x402 Endpoint Scanner MCP server. Probes paid endpoints for a well-formed HTTP 402 challenge, validates the PAYMENT-REQUIRED envelope, detects MPP dual-stack discovery, and grades A-F.",
+  "version": "0.1.0",
+  "license": "MIT",
+  "repository": "https://github.com/forgemeshlabs/x402-scan-mcp",
+  "homepage": "https://github.com/forgemeshlabs/x402-scan-mcp#readme",
+  "author": {
+    "name": "ForgeMesh Labs",
+    "url": "https://github.com/forgemeshlabs"
+  },
+  "installation": {
+    "npm": {
+      "command": "npx",
+      "args": ["-y", "@forgemeshlabs/x402-scan-mcp"]
+    }
+  },
+  "tools": [
+    {
+      "name": "scan_endpoint",
+      "description": "Scan one x402 endpoint for a valid 402 challenge, MPP dual-stack support, and an A-F health grade."
+    },
+    {
+      "name": "scan_batch",
+      "description": "Run scan_endpoint over up to 10 URLs and return each result plus a one-line summary."
+    },
+    {
+      "name": "census_stats",
+      "description": "Fetch live ForgeMesh catalog stats plus the static August 2026 x402 Bazaar health census headline numbers."
+    }
+  ],
+  "keywords": [
+    "mcp",
+    "x402",
+    "x402-scan",
+    "payment-required",
+    "agent-readiness",
+    "mpp",
+    "usdc",
+    "base",
+    "micropayments",
+    "audit"
+  ]
+}
