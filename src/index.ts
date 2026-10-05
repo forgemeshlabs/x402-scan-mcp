@@ -15,7 +15,7 @@ const urlSchema = z
 
 const server = new McpServer({
   name: "x402-scan-mcp",
-  version: "0.1.0", // keep in sync with package.json and glama.json
+  version: "0.1.2", // keep in sync with package.json and glama.json
 });
 
 function json(payload: unknown) {
