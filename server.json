@@ -1,17 +1,17 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.forgemeshlabs/x402-scan-mcp",
-  "description": "x402 Endpoint Scanner \u2014 a free local health probe for x402 paid endpoints as an MCP server.",
+  "description": "x402 Endpoint Scanner — a free local health probe for x402 paid endpoints as an MCP server.",
   "repository": {
     "url": "https://github.com/forgemeshlabs/x402-scan-mcp",
     "source": "github"
   },
-  "version": "0.1.2",
+  "version": "0.1.3",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "@forgemeshlabs/x402-scan-mcp",
-      "version": "0.1.2",
+      "version": "0.1.3",
       "transport": {
         "type": "stdio"
       }
