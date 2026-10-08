@@ -3,7 +3,7 @@
   "maintainers": ["clawdbotworker"],
   "name": "@forgemeshlabs/x402-scan-mcp",
   "description": "Free x402 Endpoint Scanner MCP server. Probes paid endpoints for a well-formed HTTP 402 challenge, validates the PAYMENT-REQUIRED envelope, detects MPP dual-stack discovery, and grades A-F.",
-  "version": "0.1.0",
+  "version": "0.1.4",
   "license": "MIT",
   "repository": "https://github.com/forgemeshlabs/x402-scan-mcp",
   "homepage": "https://github.com/forgemeshlabs/x402-scan-mcp#readme",
