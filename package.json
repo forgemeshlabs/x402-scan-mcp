@@ -1,10 +1,10 @@
 {
   "name": "@forgemeshlabs/x402-scan-mcp",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "publishConfig": {
     "access": "public"
   },
-  "description": "x402 Endpoint Scanner — a free local health probe for x402 paid endpoints as an MCP server. Checks that a PAYMENT-REQUIRED challenge is well-formed, detects MPP dual-stack discovery, and grades A-F so sellers know if agents can actually see and pay for their endpoint.",
+  "description": "x402 Endpoint Scanner — a free local health probe for x402 paid endpoints as an MCP server. Checks that a PAYMENT-REQUIRED challenge is well-formed, detects MPP dual-stack discovery, and grades A-F so sellers know if agents can actually see and pay for their endpoint. mcprush.com-claim-x402-scan-mcp-74938faf820339a6d1717639",
   "type": "module",
   "repository": {
     "type": "git",
