@@ -1,6 +1,17 @@
 import { lookup } from "node:dns/promises";
 import { isIP } from "node:net";
 
+
+// Test-only loopback exemption. There is deliberately no environment variable
+// or config switch for this: the test suite calls the function below from the
+// same process before starting its 127.0.0.1 fixture server. Nothing an
+// operator sets, and nothing an MCP client sends, can enable it.
+let testLoopbackExemption = false;
+/** @internal For scan.test.ts only. Exempts exactly 127.0.0.1 (any port) from the guard. */
+export function __setTestLoopbackExemption(enabled: boolean): void {
+  testLoopbackExemption = enabled;
+}
+
 export const MAX_URL_LENGTH = 2048;
 export const MAX_HOST_LENGTH = 253;
 export const ALLOWED_PORTS = new Set([80, 443, 8080, 8443]);
@@ -41,11 +52,9 @@ export function parseScanUrl(input: string): URL {
   if (u.hostname.length > MAX_HOST_LENGTH) throw new UnsafeUrlError("Host is too long");
 
   const port = u.port ? Number(u.port) : u.protocol === "https:" ? 443 : 80;
-  // X402_SCAN_TEST_ALLOW_LOOPBACK exists solely so the test suite can run a
-  // fixture server on 127.0.0.1 at an arbitrary ephemeral port (see the
-  // matching, narrower exemption in assertResolvableAndPublic). Never set it
-  // in production.
-  const testLoopbackPort = u.hostname === "127.0.0.1" && process.env.X402_SCAN_TEST_ALLOW_LOOPBACK === "1";
+  // Test fixture servers listen on 127.0.0.1 at an ephemeral port (see the
+  // matching, narrower exemption in assertResolvableAndPublic).
+  const testLoopbackPort = u.hostname === "127.0.0.1" && testLoopbackExemption;
   if (!ALLOWED_PORTS.has(port) && !testLoopbackPort) {
     throw new UnsafeUrlError(`Port ${port} is not allowed. Only 80, 443, 8080, and 8443 may be scanned.`);
   }
@@ -124,11 +133,10 @@ export async function assertResolvableAndPublic(u: URL): Promise<ResolvedSafeUrl
 
   const literal = isIP(host);
   if (literal) {
-    // X402_SCAN_TEST_ALLOW_LOOPBACK exists solely so the test suite can run a
-    // fixture server on 127.0.0.1. It exempts exactly that one address and
-    // nothing else (not the rest of 127/8, not ::1, not other private ranges).
-    // Never set it in production.
-    const testLoopback = host === "127.0.0.1" && process.env.X402_SCAN_TEST_ALLOW_LOOPBACK === "1";
+    // The test suite's fixture server lives on 127.0.0.1. The exemption covers
+    // exactly that one address and nothing else (not the rest of 127/8, not
+    // ::1, not other private ranges), and only after __setTestLoopbackExemption.
+    const testLoopback = host === "127.0.0.1" && testLoopbackExemption;
     if (isBlockedIp(host) && !testLoopback) {
       throw new UnsafeUrlError(`Refusing to scan private/reserved address: ${host}`);
     }

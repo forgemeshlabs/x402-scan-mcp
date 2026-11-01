@@ -29,6 +29,27 @@ export interface CensusStats {
  * convenience call to our own public stats endpoint, not a user-supplied
  * target, so it is not routed through the SSRF guard used for scan_endpoint.
  */
+/** Hard cap on the stats payload: the real response is a few KB. */
+export const MAX_CENSUS_BYTES = 64 * 1024;
+
+/** Reads at most `limit` bytes of the body; returns null (and cancels the stream) if it is larger. */
+async function readBounded(res: Response, limit: number): Promise<string | null> {
+  const declared = Number(res.headers.get("content-length"));
+  if (Number.isFinite(declared) && declared > limit) return null;
+  if (!res.body) return "";
+  const reader = res.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let size = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    size += value.byteLength;
+    if (size > limit) { await reader.cancel(); return null; }
+    chunks.push(value);
+  }
+  return Buffer.concat(chunks).toString("utf8");
+}
+
 export async function censusStats(): Promise<CensusStats> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
@@ -40,8 +61,11 @@ export async function censusStats(): Promise<CensusStats> {
     if (!res.ok) {
       return { live_catalog: null, live_catalog_error: `HTTP ${res.status}`, august_2026_census: AUGUST_2026_CENSUS };
     }
-    const data = await res.json();
-    return { live_catalog: data, august_2026_census: AUGUST_2026_CENSUS };
+    const text = await readBounded(res, MAX_CENSUS_BYTES);
+    if (text === null) {
+      return { live_catalog: null, live_catalog_error: `Response larger than ${MAX_CENSUS_BYTES} bytes`, august_2026_census: AUGUST_2026_CENSUS };
+    }
+    return { live_catalog: JSON.parse(text) as unknown, august_2026_census: AUGUST_2026_CENSUS };
   } catch (err) {
     return {
       live_catalog: null,

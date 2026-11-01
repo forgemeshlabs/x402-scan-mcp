@@ -1,6 +1,6 @@
 /**
  * scanEndpoint behavior tests against a local fixture server — run with: npm test
- * X402_SCAN_TEST_ALLOW_LOOPBACK=1 exempts exactly 127.0.0.1 from the SSRF
+ * __setTestLoopbackExemption(true) exempts exactly 127.0.0.1 from the SSRF
  * guard for the duration of these tests (see safeurl.ts).
  */
 import { test } from "node:test";
@@ -8,9 +8,9 @@ import assert from "node:assert/strict";
 import { createServer, type Server } from "node:http";
 import type { AddressInfo } from "node:net";
 import { scanEndpoint, scanBatch } from "./scan.js";
-import { UnsafeUrlError } from "./safeurl.js";
+import { __setTestLoopbackExemption, UnsafeUrlError } from "./safeurl.js";
 
-process.env.X402_SCAN_TEST_ALLOW_LOOPBACK = "1";
+__setTestLoopbackExemption(true);
 
 function fixture(handler: (req: import("node:http").IncomingMessage, res: import("node:http").ServerResponse) => void): Promise<{ server: Server; base: string }> {
   const server = createServer(handler);

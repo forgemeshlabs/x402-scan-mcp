@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.9
+
+- Security: the SSRF guard no longer has an environment-variable exemption. The test suite's 127.0.0.1 fixture is enabled by an internal function call only (`__setTestLoopbackExemption`), so nothing an operator sets or an MCP client sends can widen the guard.
+- Security: `census_stats` reads the remote stats payload through a 64 KB bounded reader before parsing; oversized responses are reported instead of parsed.
+- Dependencies: zod 3 → 4.6.7 (GHSA-mrhx-c7xc-m3w5); transitive body-parser, fast-uri, qs, ip-address and @hono/node-server advisories resolved via lockfile refresh.
+
 ## 0.1.0
 
 - Initial release: `scan_endpoint`, `scan_batch`, and `census_stats` MCP tools.
